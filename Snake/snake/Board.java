@@ -96,10 +96,4 @@ public class Board extends JPanel {
 							 RenderingHints.VALUE_ANTIALIAS_ON);
 		info.paint(g2d);
 	}
-	
-	public static void main(String args[]) {
-		Board b = new Board();
-	}
-	
-
 }

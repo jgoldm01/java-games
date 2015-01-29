@@ -56,6 +56,13 @@ public class Body {
 		}
 	}
 	
+	public int countSegments() {
+		if (this.next == null)
+			return 1;
+		else 
+			return 1 + next.countSegments();
+	}
+	
 	public void paint(Graphics2D g) {
 		g.fillRoundRect(x, y, 24, 24, 10,10);
 		if (next != null) {

@@ -18,9 +18,8 @@ public class Window extends JPanel{
 	private Board b;
 	private Piece p;
 	
-	public Window(Board b, Piece p) {
+	public Window(Board b) {
 		this.b = b;
-		this.p = p;
 		makeFrame();
 		makeKeyListener();
 	}
@@ -33,7 +32,7 @@ public class Window extends JPanel{
 		JFrame frame = new JFrame("Tetris");
 		frame.add(this);
 		
-		frame.setSize(250, 550);
+		frame.setSize(boardWidth*pieceSize, boardHeight*pieceSize);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 //		frame.setResizable(false);
@@ -95,8 +94,6 @@ public class Window extends JPanel{
 			g.setColor(p.blocks[i].c);
 			g.fillRoundRect((p.blocks[i].x)*pieceSize, (19-p.blocks[i].y)*pieceSize, 
 							pieceSize-1, pieceSize-1, 10, 10);
-			if (p.blocks[i].y < 0)
-				System.out.println("WTF");
 		}
 	}
 }

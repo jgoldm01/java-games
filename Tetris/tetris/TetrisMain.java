@@ -13,12 +13,12 @@ public class TetrisMain extends JPanel{
 	private Board b;
 	private Piece p;
 	private Window w;
-	private int startTime = 500, refreshTime = 500;
+	private int startTime = 500, refreshTime = 200;
 	
 	public TetrisMain() {
+		difficultyMenu();
 		this.b = new Board();
-		this.p = generatePiece();
-		this.w = new Window(b, p);
+		this.w = new Window(b);
 		init();
 	}
 		
@@ -41,9 +41,39 @@ public class TetrisMain extends JPanel{
 			return new Z(b);
 	}
 	
+	private void difficultyMenu() {
+		String[] options = {"Easy", "Medium", "Hard"};
+		int choice = JOptionPane.showOptionDialog(null, //Component parentComponent
+                "Select Difficulty", //Object message,
+                "New Game", //String title
+                JOptionPane.DEFAULT_OPTION, //int optionType
+                JOptionPane.PLAIN_MESSAGE, //int messageType
+                null, //Icon icon,
+                options, 
+                "Yes");
+		if (choice == 0) {
+			refreshTime = 500;
+		} else if (choice == 1){
+			refreshTime = 250;
+		} else if (choice == 2) {
+			refreshTime = 100; 
+		} else {
+			refreshTime = 500;
+		}
+	}
+	
 	private void init() {
+		b.reset();
+		p = generatePiece();
+		w.newPiece(p);
+		w.repaint();
 		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
+		TimerTask task = makeLoop();
+		timer.schedule(task, startTime, refreshTime);
+	}
+	
+	private TimerTask makeLoop() {
+		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
 				if (p.moveable) {
@@ -52,23 +82,10 @@ public class TetrisMain extends JPanel{
 				} else {
 						b.checkRows();
 						if (b.isOverTop()) {
-							String[] options = {"Yes", "No"};
-							int choice = JOptionPane.showOptionDialog(null, //Component parentComponent
-		                            "Play Again?", //Object message,
-		                            "Game Over", //String title
-		                            JOptionPane.YES_NO_OPTION, //int optionType
-		                            JOptionPane.PLAIN_MESSAGE, //int messageType
-		                            null, //Icon icon,
-		                            options, 
-		                            "Yes");
-							if (choice == 0) {
-								b.reset();
-								p = generatePiece();
-								w.newPiece(p);
-								w.repaint();
-							} else {
-								System.exit(0);
-							}
+							gameOverMenu();
+							difficultyMenu();
+							init();
+							this.cancel();
 						} else {
 							p = generatePiece();
 							w.newPiece(p);
@@ -76,7 +93,23 @@ public class TetrisMain extends JPanel{
 						}
 				}
 			}
-		}, startTime, refreshTime);
+		};
+		return task;
+	}
+	
+	private void gameOverMenu() {
+		String[] options = {"Yes", "No"};
+		int choice = JOptionPane.showOptionDialog(null, //Component parentComponent
+	            "Play Again?", //Object message,
+	            "Game Over", //String title
+	            JOptionPane.YES_NO_OPTION, //int optionType
+	            JOptionPane.PLAIN_MESSAGE, //int messageType
+	            null, //Icon icon,
+	            options, 
+	            "Yes");
+		if (choice != 0) {
+			System.exit(0);
+		}
 	}
 	
 	public static void main(String args[]) {
